@@ -1,64 +1,89 @@
-CREATE DATABASE INSURANC1;
-USE INSURANC1;
-CREATE TABLE PERSON(
-      driver_id varchar(10),
-	  First_Name varchar(10),
-      address varchar(30),
-      PRIMARY KEY(driver_id)
-);
+create database insurance;
+use insurance;
 
-CREATE TABLE CAR(
-      Reg_no varchar(10),
-      model varchar(10),
-      year_manufacture INT,
-      PRIMARY KEY(Reg_no)
-);
 
-CREATE TABLE ACCIDENT(
-      report_number  INT,
-      date_accident date,
-      location varchar(20),
-      PRIMARY KEY(report_number)
-);
+create table PERSON(driver_id varchar(20),dname varchar(20),address varchar(20),
+primary key(driver_id)); 
+desc PERSON;
 
-CREATE TABLE OWNS(
-      driver_id varchar(10),
-      Reg_no varchar(10),
-      PRIMARY KEY(driver_id, Reg_no),
-      FOREIGN KEY(driver_id) REFERENCES PERSON(driver_id),
-      FOREIGN KEY(Reg_no) REFERENCES CAR(Reg_no)
-);
+create table CAR(regno varchar(20),model varchar(20),cyear int,
+primary key(regno));
+DESC CAR;
 
-CREATE TABLE PARTICIPATED(
-      driver_id varchar(10),
-      Reg_no varchar(10),
-	  report_number  INT,
-      damage_amount INT,
-      PRIMARY KEY(report_number),
-      FOREIGN KEY(driver_id) REFERENCES PERSON(driver_id),
-      FOREIGN KEY(Reg_no) REFERENCES CAR(Reg_no),
-      foreign key(report_number) references ACCIDENT(report_number)
- );     
-SELECT * FROM ACCIDENT;
- INSERT INTO PERSON VALUES('DR1','ARAVIND','CHINA'),('DR2','SIDDHARTH','JAPAN'),('DR3','ARADARTH','MEXICO');
- INSERT INTO CAR VALUES('R1','aaa',2002),('R2','bbb',2003),('R3','ccc',2004);
- INSERT INTO ACCIDENT VALUES(111,'2002-09-09','CHINA'),(222,'2008-07-09','JAPAN'),(333,'2002-08-09','MEXICO');
- INSERT INTO ACCIDENT VALUES(444,'2008-09-09','CHINA'),(555,'2002-07-09','JAPAN'),(666,'2002-08-09','MEXICO');
- TRUNCATE TABLE ACCIDENT;
- INSERT INTO OWNS VALUES('DR1','R1'),('DR2','R2'),('DR3','R2');
- INSERT INTO PARTICIPATED VALUES('DR1','R1',111,20000),('DR2','R1',222,30000),('DR3','R1',333,40000);
-  INSERT INTO PARTICIPATED VALUES('DR2','R1',555,20000),('DR3','R1',444,30000),('DR1','R1',666,40000);
+create table ACCIDENT(report_number int,adate date),location varchar(20),
+primary key(report_number));
+DESC ACCIDENT;
 
- UPDATE PARTICIPATED SET damage_amount=25000 WHERE report_number BETWEEN 150 AND 400;
+create table OWNS(driver_id varchar(20),regno varchar(20),
+foreign key(driver_id) references PERSON(driver_id),
+foreign key(regno) references CAR(regno),
+primary key(driver_id,regno));
+DESC OWNS;
 
-select * from participated;
+create table PARTICIPATED(driver_id varchar(20),regno varchar(20),report_number int,damage_amount int,
+foreign key(driver_id) references PERSON(driver_id),foreign key(regno) references CAR(regno),
+foreign key(report_number) references ACCIDENT(report_number),
+primary key(driver_id,regno,report_number));
+DESC PARTICIPATED;
 
- SELECT * FROM ACCIDENT WHERE YEAR(date_accident)=2008;
- 
- 
- 
- 
- 
- SELECT driver_id,count( driver_id) as total
- FROM accident,participated,person
- WHERE accident.report_number = participated.report_number AND participated.driver_id = person.driver_id AND YEAR(accident.date_accident) = 2008;
+insert into PERSON values("A01","UDAY","BANGALORE");
+COMMIT;
+insert into PERSON values("AO2","LOKESH","MYSORE");
+COMMIT;
+insert into PERSON values("AO3","GAGS","SHIVMOGA");
+COMMIT;
+insert into PERSON values("AO4","RAKS","RAMNAGAR");
+insert into PERSON values("AO5","AMAR","KOTTURU");
+COMMIT;
+SELECT* FROM PERSON;
+
+insert into CAR values("B01","FIAT",2002);
+COMMIT;
+insert into CAR values("B02","FORD",2008);
+insert into CAR values("B03","MERC",2008);
+insert into CAR values("B04","BMW",2005);
+insert into CAR values("B05","SKODA",2006);
+DELETE FROM CAR WHERE YEAR=null;
+SELECT* FROM CAR;
+
+insert into ACCIDENT values("1","2004","GANDHINAGAR");
+COMMIT;
+
+insert into ACCIDENT values("2","2008","RAJAJINAGAR");
+insert into ACCIDENT VALUES("3","2008","KASTURINAGAR");
+insert into ACCIDENT values("4","2008","BTM");
+
+insert into ACCIDENT values("5","2004","NR COLONY");
+DELETE FROM ACCIDENT WHERE  LOCATION = "KASTURINAGAR" ;
+COMMIT;
+SELECT* FROM ACCIDENT;
+
+INSERT INTO OWNS(driver_id,regno)values("A01","B01");
+COMMIT;
+INSERT INTO OWNS(driver_id,regno)values("AO2","B02");
+COMMIT;
+INSERT INTO OWNS values("AO3","B03");
+INSERT INTO OWNS values("AO4","B04");
+INSERT INTO OWNS values("AO5","B05");
+SELECT* FROM OWNS;
+
+INSERT INTO PARTICIPATED VALUES("A01","B01",1,20000);
+INSERT INTO PARTICIPATED VALUES("AO2","B02",2,24000);
+INSERT INTO PARTICIPATED VALUES("AO3","B03",3,26000);
+INSERT INTO PARTICIPATED VALUES("AO4","B04",4,28000);
+INSERT INTO PARTICIPATED VALUES("AO5","B05",5,29000);
+SELECT* FROM PARTICIPATED;
+
+UPDATE PARTICIPATED
+ SET damage_amount = 25000
+WHERE  regno = 'B02' and participated.REPORT_NO = 2;
+commit;
+
+SELECT* FROM PARTICIPATED;
+
+INSERT INTO ACCIDENT  VALUES ('6', 2008-08-30, "BASAVANAGUDI");
+select* from accident;
+
+select count(*)as count  from ACCIDENT where adate = "2008";
+
+select * from accident;
